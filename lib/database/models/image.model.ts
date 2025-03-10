@@ -1,5 +1,4 @@
-import { model, Schema,Document } from "mongoose";
-import { Model,models } from "mongoose";
+import { Document, model, models, Schema } from "mongoose";
 
 export interface Image extends Document{
     title: string;
@@ -8,13 +7,13 @@ export interface Image extends Document{
     secureUrl: string; // Use string for URL
     width?: number; // Optional
     height?: number; // Optional
-    config?: Object; // Optional, generic object
+    config?: object; // Optional, generic object
     transformationUrl?: string; // Use string for URL
     aspectRatio?: string; // Optional
     color?: string; // Optional
     prompt?: string; // Optional
     Author: {
-        _id : String,
+        _id : string,
         firstName : string,
         lastname : string,
     }// Reference to User 

@@ -1,9 +1,7 @@
 'use client '
 import React from 'react'
 
-function transformationId({props} : {
-    props : any
-}) {
+function transformationId() {
     console.log("hello")
   return (
     <div>
