@@ -14,7 +14,6 @@ export async function POST(req: Request) {
     console.error("WEBHOOK_SECRET is missing in environment variables.");
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
-
   // Get the headers
   const headerPayload = headers();
   const svix_id = headerPayload.get("svix-id");
@@ -56,7 +55,7 @@ export async function POST(req: Request) {
   try {
     if (eventType === "user.created") {
       const { id, email_addresses, image_url, first_name, last_name, username } = evt.data;
-
+        console.log(evt.data);
       if (!email_addresses?.length) {
         console.error("User creation failed: No email address provided.");
         return NextResponse.json({ error: "User must have an email address" }, { status: 400 });
@@ -72,16 +71,14 @@ export async function POST(req: Request) {
       };
 
       const newUser = await createUser(user);
-
       if (newUser) {
         await clerkClient.users.updateUserMetadata(id, {
           publicMetadata: { userId: newUser._id },
         });
       }
-
+      console.log("new user created");
       return NextResponse.json({ message: "User created", user: newUser });
     }
-
     if (eventType === "user.updated") {
       const { id, image_url, first_name, last_name, username } = evt.data;
 
@@ -91,21 +88,17 @@ export async function POST(req: Request) {
         username: username ?? `user_${id.slice(0, 5)}`,
         photo: image_url ?? "",
       };
-
       const updatedUser = await updateUser(id, user);
       return NextResponse.json({ message: "User updated", user: updatedUser });
     }
-
     if (eventType === "user.deleted") {
       const deletedUser = await deleteUser(id!);
       return NextResponse.json({ message: "User deleted", user: deletedUser });
     }
-
     console.log(`Unhandled webhook event: ${eventType}`, evt.data);
   } catch (error) {
     console.error("Error processing webhook:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
-
   return NextResponse.json({ message: "Event received" });
 }

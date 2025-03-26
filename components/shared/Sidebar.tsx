@@ -1,16 +1,25 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { navLinks } from '@/constants'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { usePathname } from 'next/navigation'
 import { Button } from '../ui/button'
 import Image from 'next/image'
+import { fetchUserData } from './user'
 
 function Sidebar() {
 
     const pathname = usePathname();
+
+    useEffect(() => {
+        async function loadData() {
+          const userData = await fetchUserData();
+          console.log(userData);
+        }
+        loadData();
+      }, []);
 
   return (
     <aside className='sidebar'>
